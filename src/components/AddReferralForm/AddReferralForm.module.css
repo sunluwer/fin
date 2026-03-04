@@ -1,0 +1,43 @@
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+    /* border: solid 1px red; */
+    justify-content: center;
+    align-items: center;
+    min-width: 350px;
+    padding: 15px;
+    margin: 0 auto;
+}
+form input, button, select, option{
+    background-color: #1C1C1E;
+    color: #8D8D8E;
+    border: none;
+    border-radius: 10px;
+    padding: 15px;
+    width: 100%;
+    /* margin: 0 30px; */
+    font-size: 14;
+    font-weight: 500;
+    display: block;          /* ← это главное исправление */
+    box-sizing: border-box;
+}
+button{
+    color: black;
+    background-color: #B9FFB9;
+}
+
+form div{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+form div button:nth-child(2){
+    background-color: #ffb9b9;
+}
+
+.delete{
+    color: #444444;
+    text-decoration: underline;
+}
