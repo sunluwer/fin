@@ -51,39 +51,111 @@
   font-size: 32px;
   font-weight: 600;
   margin-top: 0;
-  margin-bottom: 12px;
-}
+  margin-bottom: 0;
 
+}
+.cardAmount{
+  color: #656565;
+  margin-top: 0;
+  margin-bottom: 24px;
+
+}
 
 
 .stats{
   display: flex;
-  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 30px;
+}
+.stats .left{
+  display: flex;
+  flex-direction: column;
+  /* flex-wrap: wrap; */
   justify-content: center;
-  gap: 11px;
-  width: 300px;
+  gap: 7px;
+  /* width: 300px; */
+  /* border: solid 1px rgb(255, 234, 0); */
+
   /* border: solid 1px red; */
 
 }
-.stats p{
-  width: 121px;
+.stats .left p{
+  /* width: 121px; */
   border-radius: 10px;
   padding: 6px 4px;
   margin: 0;
   font-size: 14px;
   font-weight: 500;
 }
+
 .register{
+  display: flex;
+  background-color: #d9d9d9;
+  border-radius: 10px;
+}
+.registerCount{
+  width: 106px;
   color: #7C7C7C;
   background-color: #F7F7F7;
 }
+.registerCash{
+  /* width: 51px; */
+  /* width: max-content; */
+  color: #898989;
+}
 .cheking{
+  display: flex;
+  border-radius: 10px;
+  background-color: #CBB990;
+}
+.chekingCount{
+  width: 106px;
   color: #9A7F3F;
   background-color: #FFEAB9;
 }
+.chekingCash{
+  /* width: 51px; */
+  /* width: max-content; */
+
+  color: #9A7F3F;
+}
 .paid{
+   display: flex;
+  border-radius: 10px;
+  background-color: #8CC98C;
+}
+.paidCount{
+  width: 106px;
   color: #427A42;
   background-color: #B9FFB9;
+}
+.paidCash{
+  /* width: 51px; */
+  color: #427A42;
+}
+
+.stats .right{
+  display: flex;
+  flex-direction: column;
+  border: solid 1px #222222;
+  background-color: #1C1C1E;
+  border-radius: 10px;
+  width: 181px;
+  justify-content: start;
+  align-items: start;
+  font-size: 14px;
+  padding: 6px;
+}
+.stats .right p{
+  margin: 0;
+}
+.allTypeCards{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.dark{
+  color: #909090;
 }
 
 
@@ -101,5 +173,21 @@
 }
 
 
+.sortByStatus{
+  display: flex;
+  gap: 5px;
+  /* border: solid 1px red; */
 
+}
+.sortByStatus p{
+  padding: 3px;
+  color: #d6d6d6;
+  border-radius: 6px;
+}
+.sortByStatus p.active{
+  border: solid 1px #222222;
+  background-color: #1C1C1E;
+
+
+}
 

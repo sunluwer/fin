@@ -1,46 +1,38 @@
-import { useState } from 'react'
-import { useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import ReferralCard from './components/ReferralCard/ReferralCard'
-import { referrals as initialReferrals } from './data/data'
-import { Popup } from './components/Popup/Popup'
-import AddReferralForm from './components/AddReferralForm/AddReferralForm'
-import './App.css'
-import { supabase } from './lib/supabase'
+import { useState, useEffect } from 'react';
+import ReferralCard from './components/ReferralCard/ReferralCard';
+import { Popup } from './components/Popup/Popup';
+import AddReferralForm from './components/AddReferralForm/AddReferralForm';
+import './App.css';
+import { supabase } from './lib/supabase';
 
 function App() {
+  const [referrals, setReferrals] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [popupIsOpened, setPopupIsOpened] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [activeStatus, setActiveStatus] = useState(null); // null = все, иначе фильтр по статусу
 
-const [referrals, setReferrals] = useState([])
-  const [loading, setLoading] = useState(true)
-
-
-useEffect(() => {
+  useEffect(() => {
     async function fetchReferrals() {
-      setLoading(true)
+      setLoading(true);
       const { data, error } = await supabase
         .from('referrals')
         .select('*')
-        .order('id', { ascending: false })   // или по created_at desc
+        .order('id', { ascending: false });
 
       if (error) {
-        console.error('Ошибка загрузки рефералов:', error)
+        console.error('Ошибка загрузки рефералов:', error);
       } else {
-        setReferrals(data || [])
+        setReferrals(data || []);
       }
-      setLoading(false)
+      setLoading(false);
     }
 
-    fetchReferrals()
-  }, [])
-// const [referrals, setReferrals] = useState(initialReferrals);
-  
-  // ─── Состояние попапа и режима ────────────────────────
-  const [popupIsOpened, setPopupIsOpened] = useState(false);
-  const [editingId, setEditingId] = useState(null);       // null = добавление, число = редактирование
+    fetchReferrals();
+  }, []);
 
   const openAddPopup = () => {
-    setEditingId(null);          // явно режим добавления
+    setEditingId(null);
     setPopupIsOpened(true);
   };
 
@@ -51,167 +43,215 @@ useEffect(() => {
 
   const closePopup = () => {
     setPopupIsOpened(false);
-    setEditingId(null);          // всегда сбрасываем редактирование при закрытии
+    setEditingId(null);
   };
 
-  // const addOrUpdateReferral = (referralData) => {
-  //   if (editingId === null) {
-  //     // Добавление
-  //     const newId = referrals.length > 0 
-  //       ? Math.max(...referrals.map(r => r.id)) + 1 
-  //       : 1;
-  //     setReferrals(prev => [...prev, { id: newId, ...referralData }]);
-  //   } else {
-  //     // Обновление
-  //     setReferrals(prev =>
-  //       prev.map(r => r.id === editingId ? { ...r, ...referralData } : r)
-  //     );
-  //   }
-    
-  //   // После любого действия — закрываем попап
-  //   closePopup();
-  // };
-
-const addOrUpdateReferral = async (referralData) => {
+  const addOrUpdateReferral = async (referralData) => {
     if (editingId === null) {
-      // Добавление
       const { data, error } = await supabase
         .from('referrals')
         .insert([referralData])
         .select()
-        .single()
+        .single();
 
       if (error) {
-        console.error('Ошибка добавления:', error)
-        alert('Не удалось добавить')
-        return
+        console.error('Ошибка добавления:', error);
+        alert('Не удалось добавить');
+        return;
       }
-      setReferrals(prev => [data, ...prev])
+      setReferrals(prev => [data, ...prev]);
     } else {
-      // Обновление
       const { error } = await supabase
         .from('referrals')
         .update(referralData)
-        .eq('id', editingId)
+        .eq('id', editingId);
 
       if (error) {
-        console.error('Ошибка обновления:', error)
-        alert('Не удалось сохранить')
-        return
+        console.error('Ошибка обновления:', error);
+        alert('Не удалось сохранить');
+        return;
       }
 
       setReferrals(prev =>
         prev.map(r => r.id === editingId ? { ...r, ...referralData } : r)
-      )
+      );
     }
 
-    closePopup()
-  }
+    closePopup();
+  };
 
-
-
-
-  const editingReferral = editingId 
-    ? referrals.find(r => r.id === editingId) 
-    : null;
-
-
-const countRegister = referrals.filter(item => item.status === "Оформлен").length
-const countPending = referrals.filter(item => item.status === "Проверка").length
-const countPaid = referrals.filter(item => item.status === "Выплачен").length
-
-// const countCash = referralsData.filter(item => item.status === "Выплачен")
-const totalPaid = referrals
-    .filter(r => r.status === "Выплачен")
-    .reduce((sum, r) => sum + (Number(r.cash) || 0), 0);
-
-    const formattedTotal = totalPaid.toLocaleString('ru-RU') + ' ₽';
-// for(let i)
-// const countCash 
-
-// const deleteReferral = (id) => {
-//     if (!window.confirm("Точно удалить этого реферала?")) return;
-    
-//     setReferrals(prev => prev.filter(r => r.id !== id));
-//     closePopup();
-//   };
-
-
-const deleteReferral = async (id) => {
-    if (!window.confirm("Точно удалить этого реферала?")) return
+  const deleteReferral = async (id) => {
+    if (!window.confirm('Точно удалить этого реферала?')) return;
 
     const { error } = await supabase
       .from('referrals')
       .delete()
-      .eq('id', id)
+      .eq('id', id);
 
     if (error) {
-      console.error('Ошибка удаления:', error)
-      alert('Не удалось удалить')
-      return
+      console.error('Ошибка удаления:', error);
+      alert('Не удалось удалить');
+      return;
     }
 
-    setReferrals(prev => prev.filter(r => r.id !== id))
-    closePopup()
-  }
+    setReferrals(prev => prev.filter(r => r.id !== id));
+    closePopup();
+  };
 
+  const editingReferral = editingId
+    ? referrals.find(r => r.id === editingId)
+    : null;
+
+  // Фильтрованные рефералы для отображения
+  const filteredReferrals = activeStatus
+    ? referrals.filter(r => r.status === activeStatus)
+    : referrals;
+
+  // Расчёты
+  const countRegister = referrals.filter(item => item.status === 'Оформлен').length;
+  const sumRegister = referrals
+    .filter(r => r.status === 'Оформлен')
+    .reduce((sum, r) => sum + (Number(r.cash) || 0), 0)
+    .toLocaleString('ru-RU') + ' ₽';
+
+  const countPending = referrals.filter(item => item.status === 'Проверка').length;
+  const sumPending = referrals
+    .filter(r => r.status === 'Проверка')
+    .reduce((sum, r) => sum + (Number(r.cash) || 0), 0)
+    .toLocaleString('ru-RU') + ' ₽';
+
+  const countPaid = referrals.filter(item => item.status === 'Выплачен').length;
+  const sumPaid = referrals
+    .filter(r => r.status === 'Выплачен')
+    .reduce((sum, r) => sum + (Number(r.cash) || 0), 0)
+    .toLocaleString('ru-RU') + ' ₽';
+
+  const totalCosts = referrals
+    .filter(r => r.status === 'Выплачен')
+    .reduce((sum, r) => sum + (Number(r.costs) || 0), 0);
+
+  const totalPaid = referrals
+    .filter(r => r.status === 'Выплачен')
+    .reduce((sum, r) => sum + (Number(r.cash) || 0), 0);
+
+  const profit = (totalPaid - totalCosts).toLocaleString('ru-RU') + ' ₽';
+
+  // Группировка по банкам для выплаченных
+  const bankCounts = referrals
+    .filter(r => r.status === 'Выплачен')
+    .reduce((acc, r) => {
+      const bank = r.bank || 'Другой';
+      acc[bank] = (acc[bank] || 0) + 1;
+      return acc;
+    }, {});
+
+  const bankList = Object.entries(bankCounts).map(([bank, count]) => (
+    <p key={bank}>{count} {bank}</p>
+  ));
+
+  if (loading) {
+    return <div>Загрузка...</div>;
+  }
 
   return (
     <>
-    <div className="container">
-      <div className="sortButtons">
-        <button>день</button>
-        <button>месяц</button>
-        <button>все</button>
-      </div>
+      <div className="container">
+        <div className="sortButtons">
+          <button>день</button>
+          <button>месяц</button>
+          <button>все</button>
+        </div>
 
-<p className='cashAmount'>{formattedTotal}</p>
+        <p className='cashAmount'>{profit}</p>
 
+        <div className="stats">
+          <div className="left">
+            <div className="register">
+              <p className='registerCount'>{countRegister} оформлений</p>
+              <p className='registerCash'>{sumRegister}</p>
+            </div>
+            <div className="cheking">
+              <p className='chekingCount'>{countPending} на проверке</p>
+              <p className='chekingCash'>{sumPending}</p>
+            </div>
+            <div className="paid">
+              <p className='paidCount'>{countPaid} выплачен</p>
+              <p className='paidCash'>{sumPaid}</p>
+            </div>
+          </div>
 
+          <div className="right">
+            <p><span className='dark'>Выплачено:</span> {sumPaid}</p>
+            <p><span className='dark'>Затраты:</span> {totalCosts.toLocaleString('ru-RU') + ' ₽'}</p>
+            <p><span className='dark'>Всего карт:</span> {countPaid}</p>
+            <div className="allTypeCards">
+              {bankList}
+            </div>
+          </div>
+        </div>
 
-<div className="stats">
-  <p className='register'>{countRegister} оформлений</p>
-  <p className='cheking'>{countPending} на проверке</p>
-  <p className='paid'>{countPaid} выплачен</p>
-</div>
+        <button
+          className="addNewReferralButton"
+          onClick={openAddPopup}
+        >
+          + new referral
+        </button>
 
+        <Popup
+          isOpened={popupIsOpened}
+          closePopup={closePopup}
+        >
+          <AddReferralForm
+            onSubmit={addOrUpdateReferral}
+            onDelete={deleteReferral}
+            initialData={editingReferral}
+            isEditing={editingId !== null}
+            editingId={editingId}
+            onCancel={closePopup}
+            close={closePopup}
+          />
+        </Popup>
 
-<button 
-        className="addNewReferralButton" 
-        onClick={openAddPopup}
-      >
-        + new referral
-      </button>
+        <div className="sortByStatus">
+                    <p
+            className={activeStatus === null ? 'active' : ''}
+            onClick={() => setActiveStatus(null)}
+          >
+            Все
+          </p> {/* Добавил "Все" для сброса фильтра */}
+          <p
+            className={activeStatus === 'Оформлен' ? 'active' : ''}
+            onClick={() => setActiveStatus('Оформлен')}
+          >
+            Оформлен
+          </p>
+          <p
+            className={activeStatus === 'Ожидание' ? 'active' : ''}
+            onClick={() => setActiveStatus('Ожидание')}
+          >
+            Ожидание
+          </p>
+          <p
+            className={activeStatus === 'Проверка' ? 'active' : ''}
+            onClick={() => setActiveStatus('Проверка')}
+          >
+            Проверка
+          </p>
+          <p
+            className={activeStatus === 'Выплачен' ? 'active' : ''}
+            onClick={() => setActiveStatus('Выплачен')}
+          >
+            Выплачен
+          </p>
+        </div>
 
-<Popup 
-        isOpened={popupIsOpened} 
-        closePopup={closePopup}
-      >
-        <AddReferralForm
-          onSubmit={addOrUpdateReferral}
-          onDelete={deleteReferral}
-          initialData={editingReferral}
-          isEditing={editingId !== null}
-          editingId={editingId}
-          onCancel={closePopup}           // отмена = просто закрыть попап
-          close={closePopup}              // если форма сама хочет закрыть
+        <ReferralCard
+          datas={filteredReferrals}
+          onEdit={openEditPopup}
         />
-      </Popup>
-
-{/* <FormFlag/> */}
-
-
-<ReferralCard 
-        datas={referrals} 
-        onEdit={openEditPopup}           // ← теперь открывает попап
-      />
-
-
-
-
-    </div>
+      </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

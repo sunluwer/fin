@@ -1,6 +1,5 @@
-import { useState } from 'react'
-import Styles from './AddReferralForm.module.css'
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import Styles from './AddReferralForm.module.css';
 
 function AddReferralForm({ onSubmit, onDelete, initialData = {}, isEditing = false, editingId, onCancel }) {
   const [formData, setFormData] = useState({
@@ -9,6 +8,8 @@ function AddReferralForm({ onSubmit, onDelete, initialData = {}, isEditing = fal
     cash: '',
     date1: '',
     date2: '',
+    date3: '',
+    costs: '',
     status: 'Проверка'
   });
 
@@ -18,7 +19,6 @@ function AddReferralForm({ onSubmit, onDelete, initialData = {}, isEditing = fal
     }
   };
 
-  // Заполняем форму данными при редактировании
   useEffect(() => {
     if (initialData && isEditing) {
       setFormData({
@@ -27,7 +27,9 @@ function AddReferralForm({ onSubmit, onDelete, initialData = {}, isEditing = fal
         cash: initialData.cash || '',
         date1: initialData.date1 || '',
         date2: initialData.date2 || '',
-        status: initialData.status || 'Оформлен'
+        date3: initialData.date3 || '',
+        costs: initialData.costs || '',
+        status: initialData.status || 'Проверка'
       });
     }
   }, [initialData, isEditing]);
@@ -50,108 +52,118 @@ function AddReferralForm({ onSubmit, onDelete, initialData = {}, isEditing = fal
       cash: Number(formData.cash),
       date1: formData.date1,
       date2: formData.date2,
+      date3: formData.date3,
+      costs: Number(formData.costs),
       status: formData.status
     });
 
-    // Очищаем только при добавлении (при редактировании очистит родитель)
     if (!isEditing) {
       setFormData({
-        bank: '', user: '', cash: '', date1: '', date2: '', status: 'Оформлен'
+        bank: '', user: '', cash: '', date1: '', date2: '', date3: '', costs: '', status: 'Проверка'
       });
     }
   };
-    
+
   return (
     <>
-<form onSubmit={handleSubmit} className={Styles.form}>
-      <input
-        type="text"
-        name="bank"
-        placeholder="Выберите банк"
-        value={formData.bank}
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="text"
-        name="user"
-        placeholder="Профиль реферала (@username)"
-        value={formData.user}
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="number"
-        name="cash"
-        placeholder="Выплата"
-        value={formData.cash}
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="text"
-        name="date1"
-        placeholder="Дата оформления (дд.мм)"
-        value={formData.date1}
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="text"
-        name="date2"
-        placeholder="Дата получения (дд.мм)"
-        value={formData.date2}
-        onChange={handleChange}
-        required
-      />
-      <select
-        name="status"
-        value={formData.status}
-        onChange={handleChange}
-      >
-        <option value="">Выберите статус</option>
-        <option value="Проверка">Проверка</option>
-        <option value="Оформлен">Оформлен</option>
-        <option value="Выплачен">Выплачен</option>
-      </select>
-
-      {/* <button type="submit">Добавить</button> */}
-
-<div className={Styles.buttons}>
-        <button type="submit">
-          {isEditing ? 'Сохранить изменения' : 'Добавить'}
-        </button>
-        
-        {isEditing && (
-          <button type="button" onClick={onCancel} className='cancel'>
-            Отмена
-          </button>
-        )}
-      </div>
-
-
-{isEditing && (
-        <p 
-          className={Styles.delete} 
-          onClick={handleDelete}
-          style={{ 
-            // color: '#ff4d4f', 
-            cursor: 'pointer', 
-            textAlign: 'center', 
-            marginTop: '16px',
-            fontWeight: '500'
-          }}
+      <form onSubmit={handleSubmit} className={Styles.form}>
+        <input
+          type="text"
+          name="bank"
+          placeholder="Выберите банк"
+          value={formData.bank}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="text"
+          name="user"
+          placeholder="Профиль реферала (@username)"
+          value={formData.user}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="number"
+          name="cash"
+          placeholder="Выплата"
+          value={formData.cash}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="text"
+          name="date1"
+          placeholder="Дата оформления (дд.мм)"
+          value={formData.date1}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="text"
+          name="date2"
+          placeholder="Дата получения (дд.мм)"
+          value={formData.date2}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="text"
+          name="date3"
+          placeholder="Дата покупки (дд.мм)"
+          value={formData.date3}
+          onChange={handleChange}
+        //   required
+        />
+        <input
+          type="number"
+          name="costs"
+          placeholder="Затраты"
+          value={formData.costs}
+          onChange={handleChange}
+          required
+        />
+        <select
+          name="status"
+          value={formData.status}
+          onChange={handleChange}
         >
-          Удалить реферала
-        </p>
-      )}
+          <option value="">Выберите статус</option>
+          <option value="Проверка">Проверка</option>
+          <option value="Оформлен">Оформлен</option>
+          <option value="Ожидание">Ожидание</option>
+          <option value="Выплачен">Выплачен</option>
+        </select>
 
+        <div className={Styles.buttons}>
+          <button type="submit">
+            {isEditing ? 'Сохранить изменения' : 'Добавить'}
+          </button>
+          
+          {isEditing && (
+            <button type="button" onClick={onCancel} className='cancel'>
+              Отмена
+            </button>
+          )}
+        </div>
 
-
-{/* <p className={Styles.delete}>Удалить</p> */}
-    </form>
+        {isEditing && (
+          <p 
+            className={Styles.delete} 
+            onClick={handleDelete}
+            style={{ 
+              cursor: 'pointer', 
+              textAlign: 'center', 
+              marginTop: '16px',
+              fontWeight: '500'
+            }}
+          >
+            Удалить реферала
+          </p>
+        )}
+      </form>
     </>
-  )
+  );
 }
 
-export default AddReferralForm
+export default AddReferralForm;
