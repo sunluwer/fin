@@ -191,3 +191,8 @@
 
 }
 
+.logout{
+  background-color: transparent;
+  color: #444444;
+  border: solid 1px #444444;
+}
