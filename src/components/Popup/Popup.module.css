@@ -16,15 +16,14 @@
   flex-direction: column;
   justify-content: center;
   align-items: start;
-  gap: 45px;
+  /* gap: 5px; */
   /* border: solid 1px red; */
 }
 
 .close {
     background: #1C1C1E;
     border: solid 1px #222222;
-    /* background: #f06806; */
-    border-radius: 100%;
+    /* border-radius: 100%; */
     width: 40px;
     height: 40px;
     text-align: center;
@@ -32,14 +31,9 @@
     justify-content: center;
     align-items: center;
     margin: 0;
-  color: white;
+    color: white;
   /* margin: 0 30px; */
   margin-left: 5%;
-  /* border: solid 1px red; */
-
-  /* position: absolute;
-  top: 130px;
-  right: 170px; */
 }
 
 .close-icon {
