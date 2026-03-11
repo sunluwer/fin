@@ -1,11 +1,9 @@
 .referrals{
-display: flex;
-flex-direction: column;
-align-items: center;
-gap: 10px;
-width: 100%;
-  /* border: solid 1px red; */
-
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
 }
 
 .referral{
@@ -47,9 +45,11 @@ width: 100%;
   border-radius: 6px;
   color: black;
 }
+
 .bank-red{
   background-color: #FF9292;
 }
+
 .bank-yellow{
   background-color: #FFEF92;
 }
@@ -57,13 +57,15 @@ width: 100%;
 .status-paid{
   color: #B9FFB9;
 }
+
 .status-pending{
   color: #ffd470;
 }
+
 .status-waiting{
   color: #ff9b65;
-
 }
+
 .edit{
     background-color: #393939;
     border: solid 1px #444444;
