@@ -10,7 +10,7 @@ function AddReferralForm({ onSubmit, onDelete, initialData = {}, isEditing = fal
     date2: '',
     date3: '',
     costs: '',
-    status: 'Проверка'
+    status: 'Оформлен'
   });
 
   const handleDelete = () => {
@@ -121,7 +121,7 @@ function AddReferralForm({ onSubmit, onDelete, initialData = {}, isEditing = fal
           placeholder="Затраты"
           value={formData.costs}
           onChange={handleChange}
-          required
+        //   required
         />
         <select
           name="status"
@@ -129,9 +129,9 @@ function AddReferralForm({ onSubmit, onDelete, initialData = {}, isEditing = fal
           onChange={handleChange}
         >
           <option value="">Выберите статус</option>
-          <option value="Проверка">Проверка</option>
           <option value="Оформлен">Оформлен</option>
           <option value="Ожидание">Ожидание</option>
+          <option value="Проверка">Проверка</option>
           <option value="Выплачен">Выплачен</option>
         </select>
 

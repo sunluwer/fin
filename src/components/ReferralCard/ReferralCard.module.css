@@ -22,7 +22,7 @@ width: 100%;
 
 .top, .bottom{
   display: flex;
-  gap: 10px;
+  gap: 5px;
   justify-content: space-between;
 }
 
@@ -30,14 +30,20 @@ width: 100%;
   margin: 0;
 }
 
+.top .left{
+  display: flex;
+  max-width: 80%;
+  align-items: start;
+}
+
 .left{
   display: flex;
-  gap: 10px;
+  gap: 8px;
 }
 
 .bank{
     background-color: #444444;
-  padding: 0 7px;
+  padding: 0 4px;
   border-radius: 6px;
   color: black;
 }
@@ -52,11 +58,15 @@ width: 100%;
   color: #B9FFB9;
 }
 .status-pending{
-  color: #FFEAB9;
+  color: #ffd470;
+}
+.status-waiting{
+  color: #ff9b65;
+
 }
 .edit{
     background-color: #393939;
     border: solid 1px #444444;
-    padding: 0px 10px;
+    padding: 0px 4px;
     border-radius: 5px;
 }
