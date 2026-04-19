@@ -234,7 +234,7 @@ function App() {
         backgroundRepeat: 'no-repeat',
         backgroundPosition: '50% 80px',
         backgroundSize: '400px',
-        minHeight: '100vh',
+        // minHeight: '100vh',
         backgroundColor: '#000000',
       }}>
         <div className="header">
