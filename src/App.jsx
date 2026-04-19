@@ -9,7 +9,7 @@ import { supabase } from './lib/supabase';
 import courierIcon from './assets/courier.svg';
 import zoomIcon from './assets/zoom.svg';
 
-// Импорт всех звёзд
+// Импорт звёзд
 import star1 from './assets/Star.png';
 import star2 from './assets/Star2.png';
 import star3 from './assets/Star3.png';
@@ -23,7 +23,7 @@ import star10 from './assets/Star10.png';
 import star11 from './assets/Star11.png';
 
 function App() {
-  // ==================== ВСЕ ХУКИ ЗДЕСЬ ====================
+  // ==================== STATE ====================
   const [session, setSession] = useState(null);
   const [loadingSession, setLoadingSession] = useState(true);
 
@@ -33,12 +33,17 @@ function App() {
   const [editingId, setEditingId] = useState(null);
   const [activeStatus, setActiveStatus] = useState(null);
 
-  // Состояние для смены звезды
+  // Смена звезды
   const [currentStarIndex, setCurrentStarIndex] = useState(0);
-
   const stars = [star1, star2, star3, star4, star5, star6, star7, star8, star9, star10, star11];
 
-  // Авторизация
+  // Выбор периода (по умолчанию — текущий месяц)
+  const [selectedPeriod, setSelectedPeriod] = useState(() => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  });
+
+  // ==================== EFFECTS ====================
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -52,7 +57,6 @@ function App() {
     return () => listener.subscription.unsubscribe();
   }, []);
 
-  // Загрузка рефералов
   useEffect(() => {
     if (!session) return;
 
@@ -63,18 +67,16 @@ function App() {
         .select('*')
         .order('id', { ascending: false });
 
-      if (error) {
-        console.error('Ошибка загрузки рефералов:', error);
-      } else {
-        setReferrals(data || []);
-      }
+      if (error) console.error('Ошибка загрузки:', error);
+      else setReferrals(data || []);
+
       setLoading(false);
     }
 
     fetchReferrals();
   }, [session]);
 
-  // Функции
+  // ==================== FUNCTIONS ====================
   const changeStyle = () => {
     setCurrentStarIndex((prev) => (prev + 1) % stars.length);
   };
@@ -94,6 +96,82 @@ function App() {
     setEditingId(null);
   };
 
+  // Генерация месяцев с февраля 2026 + будущие
+  const generateMonthOptions = () => {
+    const options = [{ value: 'all', label: 'За всё время' }];
+
+    let year = 2026;
+    let month = 2;
+
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+
+    while (year < currentYear || (year === currentYear && month <= currentMonth + 3)) {
+      const date = new Date(year, month - 1, 1);
+      const value = `${year}-${String(month).padStart(2, '0')}`;
+      const label = date.toLocaleString('ru-RU', { month: 'long', year: 'numeric' });
+
+      options.push({ value, label: label.charAt(0).toUpperCase() + label.slice(1) });
+
+      month++;
+      if (month > 12) {
+        month = 1;
+        year++;
+      }
+    }
+    return options;
+  };
+
+  const monthOptions = generateMonthOptions();
+
+  // Фильтрация по периоду
+  const getPeriodReferrals = () => {
+    if (selectedPeriod === 'all') return referrals;
+
+    const [year, month] = selectedPeriod.split('-').map(Number);
+
+    return referrals.filter(item => {
+      const dateStr = item.date2 || item.date1 || '';
+      if (!dateStr) return false;
+
+      const parts = dateStr.split('.').map(Number);
+      const mon = parts[1];
+      let yr = parts[2] || 2026;
+
+      return yr === year && mon === month;
+    });
+  };
+
+  const periodReferrals = getPeriodReferrals();
+
+  // Расчёты
+  const countRegister = periodReferrals.filter(r => r.status === 'Оформлен').length;
+  const sumRegister = periodReferrals
+    .filter(r => r.status === 'Оформлен')
+    .reduce((sum, r) => sum + (Number(r.cash) || 0), 0)
+    .toLocaleString('ru-RU') + ' ₽';
+
+  const countPending = periodReferrals.filter(r => r.status === 'Проверка').length;
+  const sumPending = periodReferrals
+    .filter(r => r.status === 'Проверка')
+    .reduce((sum, r) => sum + (Number(r.cash) || 0), 0)
+    .toLocaleString('ru-RU') + ' ₽';
+
+  const countPaid = periodReferrals.filter(r => r.status === 'Выплачен').length;
+  const sumPaid = periodReferrals
+    .filter(r => r.status === 'Выплачен')
+    .reduce((sum, r) => sum + (Number(r.cash) || 0), 0)
+    .toLocaleString('ru-RU') + ' ₽';
+
+  const totalCosts = periodReferrals
+    .filter(r => r.status === 'Выплачен')
+    .reduce((sum, r) => sum + (Number(r.costs) || 0), 0);
+
+  const profit = (Number(sumPaid.replace(/\s|₽/g, '')) - totalCosts)
+    .toLocaleString('ru-RU') + ' ₽';
+
+  // ==================== ФОРМА FUNCTIONS ====================
   const addOrUpdateReferral = async (referralData) => {
     if (editingId === null) {
       const { data, error } = await supabase
@@ -103,7 +181,7 @@ function App() {
         .single();
 
       if (error) {
-        console.error('Ошибка добавления:', error);
+        console.error(error);
         alert('Не удалось добавить');
         return;
       }
@@ -115,7 +193,7 @@ function App() {
         .eq('id', editingId);
 
       if (error) {
-        console.error('Ошибка обновления:', error);
+        console.error(error);
         alert('Не удалось сохранить');
         return;
       }
@@ -130,13 +208,9 @@ function App() {
   const deleteReferral = async (id) => {
     if (!window.confirm('Точно удалить этого реферала?')) return;
 
-    const { error } = await supabase
-      .from('referrals')
-      .delete()
-      .eq('id', id);
-
+    const { error } = await supabase.from('referrals').delete().eq('id', id);
     if (error) {
-      console.error('Ошибка удаления:', error);
+      console.error(error);
       alert('Не удалось удалить');
       return;
     }
@@ -145,93 +219,60 @@ function App() {
     closePopup();
   };
 
-  // Вычисляемые значения
   const editingReferral = editingId ? referrals.find(r => r.id === editingId) : null;
+  const filteredReferrals = activeStatus ? referrals.filter(r => r.status === activeStatus) : referrals;
 
-  const filteredReferrals = activeStatus
-    ? referrals.filter(r => r.status === activeStatus)
-    : referrals;
-
-  const countRegister = referrals.filter(item => item.status === 'Оформлен').length;
-  const sumRegister = referrals
-    .filter(r => r.status === 'Оформлен')
-    .reduce((sum, r) => sum + (Number(r.cash) || 0), 0)
-    .toLocaleString('ru-RU') + ' ₽';
-
-  const countPending = referrals.filter(item => item.status === 'Проверка').length;
-  const sumPending = referrals
-    .filter(r => r.status === 'Проверка')
-    .reduce((sum, r) => sum + (Number(r.cash) || 0), 0)
-    .toLocaleString('ru-RU') + ' ₽';
-
-  const countPaid = referrals.filter(item => item.status === 'Выплачен').length;
-  const sumPaid = referrals
-    .filter(r => r.status === 'Выплачен')
-    .reduce((sum, r) => sum + (Number(r.cash) || 0), 0)
-    .toLocaleString('ru-RU') + ' ₽';
-
-  const totalCosts = referrals
-    .filter(r => r.status === 'Выплачен')
-    .reduce((sum, r) => sum + (Number(r.costs) || 0), 0);
-
-  const totalPaid = referrals
-    .filter(r => r.status === 'Выплачен')
-    .reduce((sum, r) => sum + (Number(r.cash) || 0), 0);
-
-  const profit = (totalPaid - totalCosts).toLocaleString('ru-RU') + ' ₽';
-
-  const bankCounts = referrals
-    .filter(r => r.status === 'Выплачен')
-    .reduce((acc, r) => {
-      const bank = r.bank || 'Другой';
-      acc[bank] = (acc[bank] || 0) + 1;
-      return acc;
-    }, {});
-
-  const bankList = Object.entries(bankCounts).map(([bank, count]) => (
-    <p key={bank}>{count} {bank}</p>
-  ));
-
-  // ==================== JSX ====================
-  if (loadingSession) {
-    return <div>Проверка авторизации...</div>;
-  }
-
-  if (!session) {
-    return <Login onSuccess={() => window.location.reload()} />;
-  }
-
-  if (loading) {
-    return <div>Загрузка рефералов...</div>;
-  }
+  // ==================== RENDER ====================
+  if (loadingSession) return <div>Проверка авторизации...</div>;
+  if (!session) return <Login onSuccess={() => window.location.reload()} />;
+  if (loading) return <div>Загрузка рефералов...</div>;
 
   return (
     <>
-      {/* Фон со звездой */}
       <div className="container" style={{
-          backgroundImage: `url(${stars[currentStarIndex]})`,
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: '50% 80px',
-          backgroundSize: '400px',
-          // minHeight: '100vh',
-          backgroundColor: '#000000',
-        }}>
+        backgroundImage: `url(${stars[currentStarIndex]})`,
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: '50% 80px',
+        backgroundSize: '400px',
+        minHeight: '100vh',
+        backgroundColor: '#000000',
+      }}>
         <div className="header">
-          <button
-            onClick={() => supabase.auth.signOut().then(() => window.location.reload())}
-            className="logout"
-          >
+          <button onClick={() => supabase.auth.signOut().then(() => window.location.reload())} className="logout">
             Выйти
           </button>
-
-          <button className="style" onClick={changeStyle}>
-            Стиль
-          </button>
+          <button className="style" onClick={changeStyle}>Стиль</button>
         </div>
+
+        {/* Выпадающий список с твоим стилем */}
+
 
         <p className="opacitytext">Заработано</p>
         <p className="cashAmount">{profit}</p>
-        <p className="opacitytext">за всё время</p>
+
+                <select
+          value={selectedPeriod}
+          onChange={(e) => setSelectedPeriod(e.target.value)}
+          style={{
+            padding: '0',
+            margin: '10px 0px 0 0',
+            backgroundColor: 'transparent',
+            width: 'fit-content',
+            color: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            fontSize: '16px',
+            cursor: 'pointer',
+            opacity: '0.8',
+            fontWeight: '600',
+          }}
+        >
+          {monthOptions.map(option => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
 
         <button className="addNewReferralButton" onClick={openAddPopup}>
           добавить
@@ -240,15 +281,11 @@ function App() {
         <div className="stats">
           <div className="left">
             <div className="register">
-              <p className="registerCount">
-                {countRegister} <img src={courierIcon} alt="" />
-              </p>
+              <p className="registerCount">{countRegister} <img src={courierIcon} alt="" /></p>
               <p className="registerCash">на {sumRegister}</p>
             </div>
             <div className="cheking">
-              <p className="chekingCount">
-                {countPending} <img src={zoomIcon} alt="" />
-              </p>
+              <p className="chekingCount">{countPending} <img src={zoomIcon} alt="" /></p>
               <p className="chekingCash">на {sumPending}</p>
             </div>
           </div>
@@ -257,7 +294,17 @@ function App() {
             <p><span className="dark">Выплачено:</span> {sumPaid}</p>
             <p><span className="dark">Затраты:</span> {totalCosts.toLocaleString('ru-RU')} ₽</p>
             <p><span className="dark">Всего карт:</span> {countPaid}</p>
-            <div className="allTypeCards">{bankList}</div>
+            <div className="allTypeCards">
+              {Object.entries(
+                periodReferrals.filter(r => r.status === 'Выплачен').reduce((acc, r) => {
+                  const bank = r.bank || 'Другой';
+                  acc[bank] = (acc[bank] || 0) + 1;
+                  return acc;
+                }, {})
+              ).map(([bank, count]) => (
+                <p key={bank}>{count} {bank}</p>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -269,35 +316,14 @@ function App() {
             isEditing={editingId !== null}
             editingId={editingId}
             onCancel={closePopup}
-            close={closePopup}
           />
         </Popup>
 
         <div className="sortByStatus">
-          <p
-            className={activeStatus === 'Оформлен' ? 'active' : ''}
-            onClick={() => setActiveStatus('Оформлен')}
-          >
-            Оформлен
-          </p>
-          <p
-            className={activeStatus === 'Ожидание' ? 'active' : ''}
-            onClick={() => setActiveStatus('Ожидание')}
-          >
-            Ожидание
-          </p>
-          <p
-            className={activeStatus === 'Проверка' ? 'active' : ''}
-            onClick={() => setActiveStatus('Проверка')}
-          >
-            Проверка
-          </p>
-          <p
-            className={activeStatus === 'Выплачен' ? 'active' : ''}
-            onClick={() => setActiveStatus('Выплачен')}
-          >
-            Выплачен
-          </p>
+          <p className={activeStatus === 'Оформлен' ? 'active' : ''} onClick={() => setActiveStatus('Оформлен')}>Оформлен</p>
+          <p className={activeStatus === 'Ожидание' ? 'active' : ''} onClick={() => setActiveStatus('Ожидание')}>Ожидание</p>
+          <p className={activeStatus === 'Проверка' ? 'active' : ''} onClick={() => setActiveStatus('Проверка')}>Проверка</p>
+          <p className={activeStatus === 'Выплачен' ? 'active' : ''} onClick={() => setActiveStatus('Выплачен')}>Выплачен</p>
         </div>
 
         <ReferralCard datas={filteredReferrals} onEdit={openEditPopup} />
