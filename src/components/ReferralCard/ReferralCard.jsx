@@ -46,7 +46,7 @@ const ReferralCard = ({ datas, onEdit }) => {
           <div className={Styles.top}>
             <div className={Styles.left}>
               <p className={`${Styles.bank} ${bankClasses[data.bank] || ''}`}>{data.bank}</p>
-              <p className={Styles.user}><img src="src/assets/tg.svg" alt="tg" /> {data.user}</p>
+              <p className={Styles.user}><img src="./assets/tg.svg" alt="tg" /> {data.user}</p>
 
             </div>
             <div className={Styles.right}>
@@ -57,7 +57,7 @@ const ReferralCard = ({ datas, onEdit }) => {
                 onClick={() => onEdit(data.id)}
                 style={{ cursor: 'pointer' }}
               >
-                <img src="src/assets/edit.svg" alt="edit" />
+                <img src="./assets/edit.svg" alt="edit" />
               </p>
               </p>
             </div>
