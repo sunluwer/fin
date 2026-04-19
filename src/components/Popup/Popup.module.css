@@ -2,7 +2,7 @@
   position: fixed;
   align-items: center;
   inset: 0;                     /* вместо top/left/transform — проще и надёжнее */
-  background-color: #121212;
+  background-color: black;
   z-index: 1000;                /* выше, чем раньше */
   display: none;
   overflow-y: auto;             /* ← главное: прокрутка по вертикали */

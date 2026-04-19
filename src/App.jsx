@@ -196,29 +196,37 @@ function App() {
         Выйти
       </button>
 
-      <div className="sortButtons">
+      {/* <div className="sortButtons">
         <button>день</button>
         <button>месяц</button>
         <button>все</button>
-      </div>
-
+      </div> */}
+<p className='opacitytext'>Заработано</p>
       <p className="cashAmount">{profit}</p>
+      <p className='opacitytext'>за всё время</p>
+
+
+  <button className="addNewReferralButton" onClick={openAddPopup}>
+        добавить
+      </button>
+
 
       <div className="stats">
+        {/* <img src="src/assets/Star.png" alt="star" /> */}
         {/* ... весь твой stats блок без изменений ... */}
         <div className="left">
           <div className="register">
-            <p className="registerCount">{countRegister} оформлений</p>
-            <p className="registerCash">{sumRegister}</p>
+            <p className="registerCount">{countRegister} <img src="src/assets/courier.svg" alt="" /></p>
+            <p className="registerCash">на {sumRegister}</p>
           </div>
           <div className="cheking">
-            <p className="chekingCount">{countPending} на проверке</p>
-            <p className="chekingCash">{sumPending}</p>
+            <p className="chekingCount">{countPending} <img src="src/assets/zoom.svg" alt="" /></p>
+            <p className="chekingCash">на {sumPending}</p>
           </div>
-          <div className="paid">
+          {/* <div className="paid">
             <p className="paidCount">{countPaid} выплачен</p>
             <p className="paidCash">{sumPaid}</p>
-          </div>
+          </div> */}
         </div>
 
         <div className="right">
@@ -229,9 +237,7 @@ function App() {
         </div>
       </div>
 
-      <button className="addNewReferralButton" onClick={openAddPopup}>
-        + new referral
-      </button>
+    
 
       <Popup isOpened={popupIsOpened} closePopup={closePopup}>
         <AddReferralForm
@@ -246,12 +252,12 @@ function App() {
       </Popup>
 
       <div className="sortByStatus">
-        <p
+        {/* <p
           className={activeStatus === null ? 'active' : ''}
           onClick={() => setActiveStatus(null)}
         >
           Все
-        </p>
+        </p> */}
         <p
           className={activeStatus === 'Оформлен' ? 'active' : ''}
           onClick={() => setActiveStatus('Оформлен')}

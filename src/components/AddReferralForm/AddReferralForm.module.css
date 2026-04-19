@@ -10,7 +10,7 @@ form{
     margin-bottom: 80px;
 }
 form input, button, select, option{
-    background-color: #1C1C1E;
+    background-color: #111111;
     color: #8D8D8E;
     border: none;
     border-radius: 10px;
@@ -24,7 +24,7 @@ form input, button, select, option{
 }
 button{
     color: black;
-    background-color: #B9FFB9;
+    background-color: #15E6CE;
 }
 
 form div{
@@ -34,7 +34,8 @@ form div{
     width: 100%;
 }
 form div button:nth-child(2){
-    background-color: #ffb9b9;
+    background-color: #1b1b1b;
+    color: rgb(204, 204, 204);
 }
 
 .delete{

@@ -6,7 +6,12 @@
   /* border: solid 1px rgb(217, 255, 0); */
 
 }
-
+body{
+    background-image: url(assets/Star.png);
+  background-repeat: no-repeat;
+  background-position: 50% 80px;
+  background-size: 90%;
+}
 
 .container{
   display: flex;
@@ -16,6 +21,7 @@
   /* border: solid 1px red; */
   /* margin: 0 10px; */
   width: 400px;
+
 }
 
 
@@ -48,11 +54,23 @@
 
 
 .cashAmount{
-  font-size: 32px;
+  font-size: 64px;
   font-weight: 600;
   margin-top: 0;
   margin-bottom: 0;
+  line-height: 60px;
+  color: white;
+  /* border: solid 1px red; */
 
+
+}
+
+.opacitytext{
+  font-weight: 600;
+  color: white;
+  opacity: 0.8;
+  /* border: solid 1px red; */
+  margin: 0;
 }
 .cardAmount{
   color: #656565;
@@ -64,19 +82,23 @@
 
 .stats{
   display: flex;
-  gap: 7px;
+  gap: 40px;
   margin-top: 30px;
+  margin-bottom: 60px;
+  /* border: solid 1px red; */
+
 }
+
 .stats .left{
   display: flex;
   flex-direction: column;
   /* flex-wrap: wrap; */
   justify-content: center;
-  gap: 7px;
+  gap: 2px;
   /* width: 300px; */
   /* border: solid 1px rgb(255, 234, 0); */
 
-  /* border: solid 1px red; */
+  /* border: solid 1px rgb(255, 196, 0); */
 
 }
 .stats .left p{
@@ -90,35 +112,47 @@
 
 .register{
   display: flex;
-  background-color: #d9d9d9;
-  border-radius: 10px;
+  /* background-color: #d9d9d9; */
+  border-radius: 5px;
+  align-items: center;
 }
 .registerCount{
-  width: 106px;
-  color: #7C7C7C;
-  background-color: #F7F7F7;
-}
-.registerCash{
-  /* width: 51px; */
-  /* width: max-content; */
-  color: #898989;
+  width: 50px;
+  color: black;
+  background-color: white;
+    display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  font-weight: 600 !important;
+padding: 0 !important;
+height: 30px;
+border-radius: 6px !important;
+
 }
 .cheking{
   display: flex;
   border-radius: 10px;
-  background-color: #CBB990;
+  align-items: center;
+
+  /* background-color: #CBB990; */
 }
 .chekingCount{
-  width: 106px;
-  color: #9A7F3F;
-  background-color: #FFEAB9;
-}
-.chekingCash{
-  /* width: 51px; */
-  /* width: max-content; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  /* width: 106px; */
+  width: 50px;
+  font-weight: 600 !important;
+padding: 0 !important;
+height: 30px;
+  color: #000000;
+  background-color: #ffffff;
+border-radius: 6px !important;
 
-  color: #9A7F3F;
 }
+
 .paid{
    display: flex;
   border-radius: 10px;
@@ -129,25 +163,23 @@
   color: #427A42;
   background-color: #B9FFB9;
 }
-.paidCash{
-  /* width: 51px; */
-  color: #427A42;
-}
 
 .stats .right{
   display: flex;
   flex-direction: column;
-  border: solid 1px #222222;
-  background-color: #1C1C1E;
-  border-radius: 10px;
-  width: 181px;
+  /* border: solid 1px #222222; */
+  /* background-color: #1C1C1E; */
+  /* width: 181px; */
   justify-content: start;
   align-items: start;
   font-size: 14px;
   padding: 6px;
+  /* border: solid 1px rgb(4, 255, 0); */
+
 }
 .stats .right p{
   margin: 0;
+  line-height: 18px;
 }
 .allTypeCards{
   display: flex;
@@ -156,43 +188,55 @@
 }
 .dark{
   color: #909090;
+  font-weight: 600;
 }
 
 
 
 
 .addNewReferralButton{
-  background-color: #393939;
+  background-color: #ffffff;
   border: none;
-  padding: 10px 0;
-  border-radius: 6px;
-  width: 95%;
+  padding: 10px 31px;
+  border-radius: 100px;
+  width:fit-content;
+  font-weight: 600;
+  /* width: 95%; */
   /* width: 70vw; */
-  margin-top: 55px;
+  text-align: center;
+  margin-top: 35px;
   margin-bottom: 10px;
+  font-size: 14px;
 }
 
 
 .sortByStatus{
   display: flex;
-  gap: 5px;
+  gap: 15px;
+  /* margin-bottom: 22px; */
   /* border: solid 1px red; */
 
 }
 .sortByStatus p{
-  padding: 3px;
-  color: #d6d6d6;
-  border-radius: 6px;
+  padding: 2px 5px;
+  color: #ffffff;
+  background-color: #1C1C1C;
+  border-radius: 8px;
+  font-size: 14px;
 }
 .sortByStatus p.active{
-  border: solid 1px #222222;
-  background-color: #1C1C1E;
+  /* border: solid 1px #222222; */
+  background-color: #ffffff;
+  color: black;
 
 
 }
 
 .logout{
   background-color: transparent;
-  color: #444444;
-  border: solid 1px #444444;
+  color: white;
+  opacity: 0.5;
+  /* border: solid 1px #444444; */
+  margin-bottom: 120px !important;
+  text-align: right;
 }

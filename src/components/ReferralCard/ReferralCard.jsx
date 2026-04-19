@@ -46,17 +46,20 @@ const ReferralCard = ({ datas, onEdit }) => {
           <div className={Styles.top}>
             <div className={Styles.left}>
               <p className={`${Styles.bank} ${bankClasses[data.bank] || ''}`}>{data.bank}</p>
-              <p className={Styles.user}>{data.user}</p>
-              <p 
+              <p className={Styles.user}><img src="src/assets/tg.svg" alt="tg" /> {data.user}</p>
+
+            </div>
+            <div className={Styles.right}>
+              <p className={Styles.cash}>+{data.cash} ₽ 
+
+                              <p 
                 className={Styles.edit} 
                 onClick={() => onEdit(data.id)}
                 style={{ cursor: 'pointer' }}
               >
-                📝
+                <img src="src/assets/edit.svg" alt="edit" />
               </p>
-            </div>
-            <div className={Styles.right}>
-              <p className={Styles.cash}>+{data.cash} ₽</p>
+              </p>
             </div>
           </div>
           <div className={Styles.bottom}>
@@ -65,7 +68,7 @@ const ReferralCard = ({ datas, onEdit }) => {
               -
               <p className={Styles.date2}>{data.date2}</p>
               -
-              <p className={Styles.date3}>{data.date3 || '-'}</p> {/* Добавил date3 */}
+              <p className={Styles.date3}>{data.date3 || '?'}</p> {/* Добавил date3 */}
             </div>
             <p className={statusClasses[data.status] || ''}>
               {data.status}
