@@ -7,9 +7,10 @@ const ReferralCard = ({ datas, onEdit }) => {
   const statusClasses = {
     'Выплачен': Styles['status-paid'],
     'Проверка': Styles['status-pending'],
-    'Оформлен': Styles['status-register'], // Добавь в CSS если нужно
-    'Ожидание': Styles['status-waiting'], // Добавь в CSS если нужно
+    'Оформлен': Styles['status-register'],
+    'Ожидание': Styles['status-waiting'],
   };
+
   const bankClasses = {
     'Альфа': Styles['bank-red'],
     'Тбанк': Styles['bank-yellow'],
@@ -36,7 +37,6 @@ const ReferralCard = ({ datas, onEdit }) => {
       if (priorityA !== priorityB) {
         return priorityA - priorityB;
       }
-      
       return parseDate(a.date2) - parseDate(b.date2);
     });
   }, [datas]);
@@ -47,30 +47,36 @@ const ReferralCard = ({ datas, onEdit }) => {
         <div className={Styles.referral} key={data.id}>
           <div className={Styles.top}>
             <div className={Styles.left}>
-              <p className={`${Styles.bank} ${bankClasses[data.bank] || ''}`}>{data.bank}</p>
-              <p className={Styles.user}><img src={tgIcon} alt="tg" /> {data.user}</p>
-
+              <p className={`${Styles.bank} ${bankClasses[data.bank] || ''}`}>
+                {data.bank}
+              </p>
+              <p className={Styles.user}>
+                <img src={tgIcon} alt="tg" /> {data.user}
+              </p>
             </div>
-            <div className={Styles.right}>
-              <p className={Styles.cash}>+{data.cash} ₽ 
 
-                              <p 
-                className={Styles.edit} 
-                onClick={() => onEdit(data.id)}
-                style={{ cursor: 'pointer' }}
-              >
-                <img src={editIcon} alt="edit" />
-              </p>
-              </p>
+            <div className={Styles.right}>
+              {/* Исправлено: убрали вложенный <p> */}
+              <div className={Styles.cash}>
+                +{data.cash} ₽
+                <span 
+                  className={Styles.edit} 
+                  onClick={() => onEdit(data.id)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <img src={editIcon} alt="edit" />
+                </span>
+              </div>
             </div>
           </div>
+
           <div className={Styles.bottom}>
             <div className={Styles.left}>
               <p className={Styles.date1}>{data.date1}</p>
               -
               <p className={Styles.date2}>{data.date2}</p>
               -
-              <p className={Styles.date3}>{data.date3 || '?'}</p> {/* Добавил date3 */}
+              <p className={Styles.date3}>{data.date3 || '?'}</p>
             </div>
             <p className={statusClasses[data.status] || ''}>
               {data.status}

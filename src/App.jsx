@@ -2,14 +2,27 @@ import { useState, useEffect } from 'react';
 import ReferralCard from './components/ReferralCard/ReferralCard';
 import { Popup } from './components/Popup/Popup';
 import AddReferralForm from './components/AddReferralForm/AddReferralForm';
-import Login from './components/Login'; // Убедись, что этот компонент существует
+import Login from './components/Login';
 import './App.css';
-import courierIcon from './assets/courier.svg';
-import zoomIcon from './assets/zoom.svg';
 import { supabase } from './lib/supabase';
 
+import courierIcon from './assets/courier.svg';
+import zoomIcon from './assets/zoom.svg';
+
+// Импорт всех звёзд
+import star1 from './assets/Star.png';
+import star2 from './assets/Star2.png';
+import star3 from './assets/Star3.png';
+import star4 from './assets/Star4.png';
+import star5 from './assets/Star5.png';
+import star6 from './assets/Star6.png';
+import star7 from './assets/Star7.png';
+import star8 from './assets/Star8.png';
+import star9 from './assets/Star9.png';
+import star10 from './assets/Star10.png';
+
 function App() {
-  // Все хуки — строго в начале, до любых условий и return
+  // ==================== ВСЕ ХУКИ ЗДЕСЬ ====================
   const [session, setSession] = useState(null);
   const [loadingSession, setLoadingSession] = useState(true);
 
@@ -19,7 +32,12 @@ function App() {
   const [editingId, setEditingId] = useState(null);
   const [activeStatus, setActiveStatus] = useState(null);
 
-  // Авторизация (всегда вызывается)
+  // Состояние для смены звезды
+  const [currentStarIndex, setCurrentStarIndex] = useState(0);
+
+  const stars = [star1, star2, star3, star4, star5, star6, star7, star8, star9, star10];
+
+  // Авторизация
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -33,9 +51,9 @@ function App() {
     return () => listener.subscription.unsubscribe();
   }, []);
 
-  // Загрузка рефералов — только если залогинен (но хук вызывается всегда)
+  // Загрузка рефералов
   useEffect(() => {
-    if (!session) return; // Просто пропускаем, если нет сессии — хук всё равно вызван
+    if (!session) return;
 
     async function fetchReferrals() {
       setLoading(true);
@@ -53,9 +71,13 @@ function App() {
     }
 
     fetchReferrals();
-  }, [session]); // Зависимость от session — перезагружается при логине
+  }, [session]);
 
-  // Все расчёты и функции — после хуков
+  // Функции
+  const changeStyle = () => {
+    setCurrentStarIndex((prev) => (prev + 1) % stars.length);
+  };
+
   const openAddPopup = () => {
     setEditingId(null);
     setPopupIsOpened(true);
@@ -72,7 +94,6 @@ function App() {
   };
 
   const addOrUpdateReferral = async (referralData) => {
-    // ... (твой код без изменений)
     if (editingId === null) {
       const { data, error } = await supabase
         .from('referrals')
@@ -102,12 +123,10 @@ function App() {
         prev.map(r => r.id === editingId ? { ...r, ...referralData } : r)
       );
     }
-
     closePopup();
   };
 
   const deleteReferral = async (id) => {
-    // ... (твой код без изменений)
     if (!window.confirm('Точно удалить этого реферала?')) return;
 
     const { error } = await supabase
@@ -125,15 +144,13 @@ function App() {
     closePopup();
   };
 
-  const editingReferral = editingId
-    ? referrals.find(r => r.id === editingId)
-    : null;
+  // Вычисляемые значения
+  const editingReferral = editingId ? referrals.find(r => r.id === editingId) : null;
 
   const filteredReferrals = activeStatus
     ? referrals.filter(r => r.status === activeStatus)
     : referrals;
 
-  // Расчёты (всегда выполняются, но если !session — referrals пустой)
   const countRegister = referrals.filter(item => item.status === 'Оформлен').length;
   const sumRegister = referrals
     .filter(r => r.status === 'Оформлен')
@@ -174,7 +191,7 @@ function App() {
     <p key={bank}>{count} {bank}</p>
   ));
 
-  // JSX — теперь только один return
+  // ==================== JSX ====================
   if (loadingSession) {
     return <div>Проверка авторизации...</div>;
   }
@@ -188,106 +205,103 @@ function App() {
   }
 
   return (
-    <div className="container">
-      {/* Кнопка выхода */}
-      <button
-        onClick={() => supabase.auth.signOut().then(() => window.location.reload())}
-        style={{ margin: '10px', padding: '8px 16px' }}
-        className='logout'
-      >
-        Выйти
-      </button>
+    <>
+      {/* Фон со звездой */}
+      <div className="container" style={{
+          backgroundImage: `url(${stars[currentStarIndex]})`,
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: '50% 80px',
+          backgroundSize: '400px',
+          minHeight: '100vh',
+          backgroundColor: '#000000',
+        }}>
+        <div className="header">
+          <button
+            onClick={() => supabase.auth.signOut().then(() => window.location.reload())}
+            className="logout"
+          >
+            Выйти
+          </button>
 
-      {/* <div className="sortButtons">
-        <button>день</button>
-        <button>месяц</button>
-        <button>все</button>
-      </div> */}
-<p className='opacitytext'>Заработано</p>
-      <p className="cashAmount">{profit}</p>
-      <p className='opacitytext'>за всё время</p>
-
-
-  <button className="addNewReferralButton" onClick={openAddPopup}>
-        добавить
-      </button>
-
-
-      <div className="stats">
-        {/* <img src="src/assets/Star.png" alt="star" /> */}
-        {/* ... весь твой stats блок без изменений ... */}
-        <div className="left">
-          <div className="register">
-            <p className="registerCount">{countRegister} <img src={courierIcon} alt="" /></p>
-            <p className="registerCash">на {sumRegister}</p>
-          </div>
-          <div className="cheking">
-            <p className="chekingCount">{countPending} <img src={zoomIcon} alt="" /></p>
-            <p className="chekingCash">на {sumPending}</p>
-          </div>
-          {/* <div className="paid">
-            <p className="paidCount">{countPaid} выплачен</p>
-            <p className="paidCash">{sumPaid}</p>
-          </div> */}
+          <button className="style" onClick={changeStyle}>
+            Стиль
+          </button>
         </div>
 
-        <div className="right">
-          <p><span className="dark">Выплачено:</span> {sumPaid}</p>
-          <p><span className="dark">Затраты:</span> {totalCosts.toLocaleString('ru-RU') + ' ₽'}</p>
-          <p><span className="dark">Всего карт:</span> {countPaid}</p>
-          <div className="allTypeCards">{bankList}</div>
+        <p className="opacitytext">Заработано</p>
+        <p className="cashAmount">{profit}</p>
+        <p className="opacitytext">за всё время</p>
+
+        <button className="addNewReferralButton" onClick={openAddPopup}>
+          добавить
+        </button>
+
+        <div className="stats">
+          <div className="left">
+            <div className="register">
+              <p className="registerCount">
+                {countRegister} <img src={courierIcon} alt="" />
+              </p>
+              <p className="registerCash">на {sumRegister}</p>
+            </div>
+            <div className="cheking">
+              <p className="chekingCount">
+                {countPending} <img src={zoomIcon} alt="" />
+              </p>
+              <p className="chekingCash">на {sumPending}</p>
+            </div>
+          </div>
+
+          <div className="right">
+            <p><span className="dark">Выплачено:</span> {sumPaid}</p>
+            <p><span className="dark">Затраты:</span> {totalCosts.toLocaleString('ru-RU')} ₽</p>
+            <p><span className="dark">Всего карт:</span> {countPaid}</p>
+            <div className="allTypeCards">{bankList}</div>
+          </div>
         </div>
+
+        <Popup isOpened={popupIsOpened} closePopup={closePopup}>
+          <AddReferralForm
+            onSubmit={addOrUpdateReferral}
+            onDelete={deleteReferral}
+            initialData={editingReferral}
+            isEditing={editingId !== null}
+            editingId={editingId}
+            onCancel={closePopup}
+            close={closePopup}
+          />
+        </Popup>
+
+        <div className="sortByStatus">
+          <p
+            className={activeStatus === 'Оформлен' ? 'active' : ''}
+            onClick={() => setActiveStatus('Оформлен')}
+          >
+            Оформлен
+          </p>
+          <p
+            className={activeStatus === 'Ожидание' ? 'active' : ''}
+            onClick={() => setActiveStatus('Ожидание')}
+          >
+            Ожидание
+          </p>
+          <p
+            className={activeStatus === 'Проверка' ? 'active' : ''}
+            onClick={() => setActiveStatus('Проверка')}
+          >
+            Проверка
+          </p>
+          <p
+            className={activeStatus === 'Выплачен' ? 'active' : ''}
+            onClick={() => setActiveStatus('Выплачен')}
+          >
+            Выплачен
+          </p>
+        </div>
+
+        <ReferralCard datas={filteredReferrals} onEdit={openEditPopup} />
       </div>
-
-    
-
-      <Popup isOpened={popupIsOpened} closePopup={closePopup}>
-        <AddReferralForm
-          onSubmit={addOrUpdateReferral}
-          onDelete={deleteReferral}
-          initialData={editingReferral}
-          isEditing={editingId !== null}
-          editingId={editingId}
-          onCancel={closePopup}
-          close={closePopup}
-        />
-      </Popup>
-
-      <div className="sortByStatus">
-        {/* <p
-          className={activeStatus === null ? 'active' : ''}
-          onClick={() => setActiveStatus(null)}
-        >
-          Все
-        </p> */}
-        <p
-          className={activeStatus === 'Оформлен' ? 'active' : ''}
-          onClick={() => setActiveStatus('Оформлен')}
-        >
-          Оформлен
-        </p>
-        <p
-          className={activeStatus === 'Ожидание' ? 'active' : ''}
-          onClick={() => setActiveStatus('Ожидание')}
-        >
-          Ожидание
-        </p>
-        <p
-          className={activeStatus === 'Проверка' ? 'active' : ''}
-          onClick={() => setActiveStatus('Проверка')}
-        >
-          Проверка
-        </p>
-        <p
-          className={activeStatus === 'Выплачен' ? 'active' : ''}
-          onClick={() => setActiveStatus('Выплачен')}
-        >
-          Выплачен
-        </p>
-      </div>
-
-      <ReferralCard datas={filteredReferrals} onEdit={openEditPopup} />
-    </div>
+    </>
   );
 }
 
