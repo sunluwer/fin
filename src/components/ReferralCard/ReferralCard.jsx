@@ -1,6 +1,6 @@
 import Styles from './ReferralCard.module.css';
-import editIcon from './assets/edit.svg';
-import tgIcon from './assets/tg.svg';
+import editIcon from '../../assets/edit.svg';
+import tgIcon from '../../assets/tg.svg';
 import { useMemo } from 'react';
 
 const ReferralCard = ({ datas, onEdit }) => {
