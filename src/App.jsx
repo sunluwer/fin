@@ -4,6 +4,8 @@ import { Popup } from './components/Popup/Popup';
 import AddReferralForm from './components/AddReferralForm/AddReferralForm';
 import Login from './components/Login'; // Убедись, что этот компонент существует
 import './App.css';
+import courierIcon from './assets/courier.svg';
+import zoomIcon from './assets/zoom.svg';
 import { supabase } from './lib/supabase';
 
 function App() {
@@ -216,11 +218,11 @@ function App() {
         {/* ... весь твой stats блок без изменений ... */}
         <div className="left">
           <div className="register">
-            <p className="registerCount">{countRegister} <img src="./assets/courier.svg" alt="" /></p>
+            <p className="registerCount">{countRegister} <img src={courierIcon} alt="" /></p>
             <p className="registerCash">на {sumRegister}</p>
           </div>
           <div className="cheking">
-            <p className="chekingCount">{countPending} <img src="./assets/zoom.svg" alt="" /></p>
+            <p className="chekingCount">{countPending} <img src={zoomIcon} alt="" /></p>
             <p className="chekingCash">на {sumPending}</p>
           </div>
           {/* <div className="paid">
