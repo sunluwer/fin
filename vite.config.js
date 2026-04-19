@@ -12,8 +12,8 @@ export default defineConfig({
         name: 'Afilliate',                    // полное название
         short_name: 'Финансы',                      // короткое название (под иконкой)
         description: 'Описание твоего приложения',
-        theme_color: '#ffffff',                     // цвет темы
-        background_color: '#ffffff',
+        theme_color: '#000000',                     // цвет темы
+        background_color: '#000000',
         display: 'standalone',                      // ← Вот это главное! Убирает браузерный интерфейс
         scope: '/',
         start_url: '/',
