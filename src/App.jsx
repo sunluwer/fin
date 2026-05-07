@@ -19,8 +19,6 @@ import star6 from './assets/Star6.png';
 import star7 from './assets/Star7.png';
 import star8 from './assets/Star8.png';
 import star9 from './assets/Star9.png';
-import star10 from './assets/Star10.png';
-import star11 from './assets/Star11.png';
 
 function App() {
   // ==================== STATE ====================
@@ -35,7 +33,7 @@ function App() {
 
   // Смена звезды
   const [currentStarIndex, setCurrentStarIndex] = useState(0);
-  const stars = [star1, star2, star3, star4, star5, star6, star7, star8, star9, star10, star11];
+  const stars = [star1, star2, star3, star4, star5, star6, star7, star8, star9];
 
   // Выбор периода (по умолчанию — текущий месяц)
   const [selectedPeriod, setSelectedPeriod] = useState(() => {
