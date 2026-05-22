@@ -8,6 +8,7 @@ import { supabase } from './lib/supabase';
 
 import courierIcon from './assets/courier.svg';
 import zoomIcon from './assets/zoom.svg';
+import loadingIcon from './assets/loading.svg';
 
 // Импорт звёзд
 import star1 from './assets/Star.png';
@@ -156,6 +157,12 @@ function App() {
     .reduce((sum, r) => sum + (Number(r.cash) || 0), 0)
     .toLocaleString('ru-RU') + ' ₽';
 
+      const countLoading = periodReferrals.filter(r => r.status === 'Ожидание').length;
+  const sumLoading = periodReferrals
+    .filter(r => r.status === 'Ожидание')
+    .reduce((sum, r) => sum + (Number(r.cash) || 0), 0)
+    .toLocaleString('ru-RU') + ' ₽';
+
   const countPaid = periodReferrals.filter(r => r.status === 'Выплачен').length;
   const sumPaid = periodReferrals
     .filter(r => r.status === 'Выплачен')
@@ -281,6 +288,10 @@ function App() {
             <div className="register">
               <p className="registerCount">{countRegister} <img src={courierIcon} alt="" /></p>
               <p className="registerCash">на {sumRegister}</p>
+            </div>
+              <div className="loading">
+              <p className="loadingCount">{countLoading} <img src={loadingIcon} alt="" /></p>
+              <p className="loadingCash">на {sumLoading}</p>
             </div>
             <div className="cheking">
               <p className="chekingCount">{countPending} <img src={zoomIcon} alt="" /></p>

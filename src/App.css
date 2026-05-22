@@ -108,7 +108,7 @@ body{
 .stats .left p{
   /* width: 121px; */
   border-radius: 10px;
-  padding: 6px 4px;
+  padding: 0px 0px;
   margin: 0;
   font-size: 14px;
   font-weight: 500;
@@ -117,27 +117,60 @@ body{
 .register{
   display: flex;
   /* background-color: #d9d9d9; */
-  border-radius: 5px;
+  /* border-radius: 5px; */
   align-items: center;
+  /* border: solid 1px red; */
+
 }
 .registerCount{
   width: 50px;
-  color: black;
-  background-color: white;
+  /* color: black;
+  background-color: white; */
     display: flex;
   justify-content: center;
   align-items: center;
   gap: 7px;
   font-weight: 600 !important;
 padding: 0 !important;
-height: 30px;
+/* height: 30px; */
 border-radius: 6px !important;
+  /* color: #808080; */
 
 }
+.registerCash{
+  color: #808080;
+}
+
+.loading{
+  display: flex;
+  /* border-radius: 10px; */
+  align-items: center;
+  /* border: solid 1px red; */
+
+}
+.loadingCount{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  /* width: 106px; */
+  width: 50px;
+  font-weight: 600 !important;
+padding: 0 !important;
+/* height: 30px; */
+  /* color: #000000; */
+  /* background-color: #ffffff; */
+border-radius: 6px !important;
+}
+.loadingCash{
+  color: #808080;
+}
+
 .cheking{
   display: flex;
-  border-radius: 10px;
+  /* border-radius: 10px; */
   align-items: center;
+  /* border: solid 1px red; */
 
   /* background-color: #CBB990; */
 }
@@ -150,11 +183,13 @@ border-radius: 6px !important;
   width: 50px;
   font-weight: 600 !important;
 padding: 0 !important;
-height: 30px;
-  color: #000000;
-  background-color: #ffffff;
+/* height: 30px; */
+  /* color: #000000;
+  background-color: #ffffff; */
 border-radius: 6px !important;
-
+}
+.chekingCash{
+  color: #808080;
 }
 
 .paid{
@@ -178,6 +213,7 @@ border-radius: 6px !important;
   align-items: start;
   font-size: 14px;
   padding: 6px;
+  gap: 2px;
   /* border: solid 1px rgb(4, 255, 0); */
 
 }
