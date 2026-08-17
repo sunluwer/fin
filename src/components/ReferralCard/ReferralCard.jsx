@@ -31,12 +31,20 @@ const ReferralCard = ({ datas, onEdit }) => {
     };
 
     return [...datas].sort((a, b) => {
+      // Сортировка по статусу (как было)
       const priorityA = statusPriority[a.status] || 99;
       const priorityB = statusPriority[b.status] || 99;
       
       if (priorityA !== priorityB) {
         return priorityA - priorityB;
       }
+
+      // === НОВОЕ: в "Выплачены" — сортируем по дате2 по убыванию (свежие сверху) ===
+      if (a.status === 'Выплачен' && b.status === 'Выплачен') {
+        return parseDate(b.date2) - parseDate(a.date2); // свежие сверху
+      }
+
+      // Обычная сортировка по дате2 для остальных статусов
       return parseDate(a.date2) - parseDate(b.date2);
     });
   }, [datas]);
@@ -57,7 +65,6 @@ const ReferralCard = ({ datas, onEdit }) => {
 
             <div className={Styles.right}>
               {/* Исправлено: убрали вложенный <p> */}
-              <div className={Styles.cash}>
                 +{data.cash} ₽
                 <span 
                   className={Styles.edit} 
@@ -66,7 +73,6 @@ const ReferralCard = ({ datas, onEdit }) => {
                 >
                   <img src={editIcon} alt="edit" />
                 </span>
-              </div>
             </div>
           </div>
 

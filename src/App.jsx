@@ -6,20 +6,10 @@ import Login from './components/Login';
 import './App.css';
 import { supabase } from './lib/supabase';
 
-import courierIcon from './assets/courier.svg';
-import zoomIcon from './assets/zoom.svg';
-import loadingIcon from './assets/loading.svg';
-
 // Импорт звёзд
 import star1 from './assets/Star.png';
 import star2 from './assets/Star2.png';
-import star3 from './assets/Star3.png';
-import star4 from './assets/Star4.png';
-import star5 from './assets/Star5.png';
-import star6 from './assets/Star6.png';
-import star7 from './assets/Star7.png';
-import star8 from './assets/Star8.png';
-import star9 from './assets/Star9.png';
+
 
 function App() {
   // ==================== STATE ====================
@@ -34,13 +24,25 @@ function App() {
 
   // Смена звезды
   const [currentStarIndex, setCurrentStarIndex] = useState(0);
-  const stars = [star1, star2, star3, star4, star5, star6, star7, star8, star9];
+  const stars = [star1, star2];
 
   // Выбор периода (по умолчанию — текущий месяц)
   const [selectedPeriod, setSelectedPeriod] = useState(() => {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
   });
+
+  const currentDate = new Date().toLocaleDateString('ru-RU', {
+  weekday: 'short',
+  day: 'numeric',
+  month: 'long',
+});
+
+const formattedDate =
+  currentDate.charAt(0).toUpperCase() + currentDate.slice(1);
+
+
+
 
   // ==================== EFFECTS ====================
   useEffect(() => {
@@ -143,6 +145,55 @@ function App() {
   };
 
   const periodReferrals = getPeriodReferrals();
+const currentProfit = periodReferrals
+  .filter(r => r.status === 'Выплачен')
+  .reduce(
+    (sum, r) => sum + (Number(r.cash) || 0) - (Number(r.costs) || 0),
+    0
+  );
+
+let formattedProfitPercent = '—';
+
+if (selectedPeriod !== 'all') {
+  const [year, month] = selectedPeriod.split('-').map(Number);
+
+  const previousDate = new Date(year, month - 2, 1);
+  const previousYear = previousDate.getFullYear();
+  const previousMonth = previousDate.getMonth() + 1;
+
+  const previousMonthReferrals = referrals.filter(item => {
+    const dateStr = item.date2 || item.date1 || '';
+    if (!dateStr) return false;
+
+    const parts = dateStr.split('.').map(Number);
+    const itemMonth = parts[1];
+    const itemYear = parts[2] || 2026;
+
+    return (
+      itemYear === previousYear &&
+      itemMonth === previousMonth
+    );
+  });
+
+  const previousProfit = previousMonthReferrals
+    .filter(r => r.status === 'Выплачен')
+    .reduce(
+      (sum, r) => sum + (Number(r.cash) || 0) - (Number(r.costs) || 0),
+      0
+    );
+
+  if (previousProfit !== 0) {
+    const percent =
+      ((currentProfit - previousProfit) / Math.abs(previousProfit)) * 100;
+
+    formattedProfitPercent =
+      `${percent >= 0 ? '+' : ''}${percent.toFixed(2)}%`;
+  }
+}
+
+
+
+
 
   // Расчёты
   const countRegister = periodReferrals.filter(r => r.status === 'Оформлен').length;
@@ -174,7 +225,12 @@ function App() {
     .reduce((sum, r) => sum + (Number(r.costs) || 0), 0);
 
   const profit = (Number(sumPaid.replace(/\s|₽/g, '')) - totalCosts)
-    .toLocaleString('ru-RU') + ' ₽';
+    .toLocaleString('ru-RU', {
+      useGrouping: true,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    })
+    .replace(/\s/g, ',');
 
   // ==================== ФОРМА FUNCTIONS ====================
   const addOrUpdateReferral = async (referralData) => {
@@ -232,44 +288,47 @@ function App() {
   if (!session) return <Login onSuccess={() => window.location.reload()} />;
   if (loading) return <div>Загрузка рефералов...</div>;
 
+
+
+
   return (
     <>
       <div className="container" style={{
         backgroundImage: `url(${stars[currentStarIndex]})`,
         backgroundRepeat: 'no-repeat',
-        backgroundPosition: '50% 80px',
-        backgroundSize: '400px',
-        // minHeight: '100vh',
-        backgroundColor: '#000000',
+        backgroundPosition: '80% 0px',
+        backgroundSize: '450px',
       }}>
         <div className="header">
           <button onClick={() => supabase.auth.signOut().then(() => window.location.reload())} className="logout">
             Выйти
           </button>
-          <button className="style" onClick={changeStyle}>Стиль</button>
         </div>
 
         {/* Выпадающий список с твоим стилем */}
 
+<div className="topblock">
+<div>
+  <p className="opacitytext">{formattedDate}</p>
+  <p className="profitpercent">{formattedProfitPercent}</p>
+</div>
 
-        <p className="opacitytext">Заработано</p>
-        <p className="cashAmount">{profit}</p>
+  <p className="cashAmount">{profit}<span className="ruble">₽</span></p>
 
-                <select
+<div>
+        <select
           value={selectedPeriod}
           onChange={(e) => setSelectedPeriod(e.target.value)}
           style={{
             padding: '0',
-            margin: '10px 0px 0 0',
             backgroundColor: 'transparent',
             width: 'fit-content',
-            color: 'white',
+            color: 'black',
             border: 'none',
-            borderRadius: '8px',
-            fontSize: '16px',
+            fontSize: '14px',
             cursor: 'pointer',
-            opacity: '0.8',
-            fontWeight: '600',
+            opacity: '0.7',
+            fontWeight: '500',
           }}
         >
           {monthOptions.map(option => (
@@ -278,43 +337,28 @@ function App() {
             </option>
           ))}
         </select>
-
         <button className="addNewReferralButton" onClick={openAddPopup}>
-          добавить
+          +++++
         </button>
+</div>
+</div>
+        
+<div className="podlojka">
+
 
         <div className="stats">
-          <div className="left">
             <div className="register">
-              <p className="registerCount">{countRegister} <img src={courierIcon} alt="" /></p>
-              <p className="registerCash">на {sumRegister}</p>
+              <p className="registerCount">{countRegister} заказали</p>
+              <p className="registerCash">({sumRegister})</p>
             </div>
               <div className="loading">
-              <p className="loadingCount">{countLoading} <img src={loadingIcon} alt="" /></p>
-              <p className="loadingCash">на {sumLoading}</p>
+              <p className="loadingCount">{countLoading} жду цд</p>
+              <p className="loadingCash">({sumLoading})</p>
             </div>
             <div className="cheking">
-              <p className="chekingCount">{countPending} <img src={zoomIcon} alt="" /></p>
-              <p className="chekingCash">на {sumPending}</p>
+              <p className="chekingCount">{countPending} жду выплаты</p>
+              <p className="chekingCash">({sumPending})</p>
             </div>
-          </div>
-
-          <div className="right">
-            <p><span className="dark">Выплачено:</span> {sumPaid}</p>
-            <p><span className="dark">Затраты:</span> {totalCosts.toLocaleString('ru-RU')} ₽</p>
-            <p><span className="dark">Всего карт:</span> {countPaid}</p>
-            <div className="allTypeCards">
-              {Object.entries(
-                periodReferrals.filter(r => r.status === 'Выплачен').reduce((acc, r) => {
-                  const bank = r.bank || 'Другой';
-                  acc[bank] = (acc[bank] || 0) + 1;
-                  return acc;
-                }, {})
-              ).map(([bank, count]) => (
-                <p key={bank}>{count} {bank}</p>
-              ))}
-            </div>
-          </div>
         </div>
 
         <Popup isOpened={popupIsOpened} closePopup={closePopup}>
@@ -329,13 +373,15 @@ function App() {
         </Popup>
 
         <div className="sortByStatus">
-          <p className={activeStatus === 'Оформлен' ? 'active' : ''} onClick={() => setActiveStatus('Оформлен')}>Оформлен</p>
-          <p className={activeStatus === 'Ожидание' ? 'active' : ''} onClick={() => setActiveStatus('Ожидание')}>Ожидание</p>
-          <p className={activeStatus === 'Проверка' ? 'active' : ''} onClick={() => setActiveStatus('Проверка')}>Проверка</p>
-          <p className={activeStatus === 'Выплачен' ? 'active' : ''} onClick={() => setActiveStatus('Выплачен')}>Выплачен</p>
+          <p className={activeStatus === null ? 'active' : ''}onClick={() => setActiveStatus(null)}>все</p>
+          <p className={activeStatus === 'Оформлен' ? 'active' : ''} onClick={() => setActiveStatus('Оформлен')}>заказали</p>
+          <p className={activeStatus === 'Ожидание' ? 'active' : ''} onClick={() => setActiveStatus('Ожидание')}>цд</p>
+          <p className={activeStatus === 'Проверка' ? 'active' : ''} onClick={() => setActiveStatus('Проверка')}>проверка</p>
+          <p className={activeStatus === 'Выплачен' ? 'active' : ''} onClick={() => setActiveStatus('Выплачен')}>выплачены</p>
         </div>
 
         <ReferralCard datas={filteredReferrals} onEdit={openEditPopup} />
+      </div>
       </div>
     </>
   );

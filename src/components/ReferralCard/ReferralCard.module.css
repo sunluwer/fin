@@ -4,20 +4,21 @@
   align-items: center;
   gap: 10px;
   width: 100%;
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 .referral{
   display: flex;
   flex-direction: column;
   /* background-color: #1C1C1E; */
-  border: solid 1px #212121;
+  /* border: solid 1px #212121; */
   /* border: none; */
   border-radius: 10px;
   padding: 10px;
   width: 90%;
-  gap: 0px;
+  gap: 10px;
   margin-bottom: 10px;
+  /* font-size: 16px; */
 }
 
 .top, .bottom{
@@ -39,7 +40,7 @@
 
 .left{
   display: flex;
-  gap: 5px;
+  /* gap: 10px; */
 }
 .left, .right{
   /* border: solid 1px rgb(255, 251, 0); */
@@ -47,17 +48,20 @@
 }
 .top .left{
   flex-direction: column;
-  gap: 0px;
+  gap: 10px;
 
 }
+.top .right{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  /* border: solid 1px red; */
+}
+
 .user{
   display: flex;
   align-items: center;
   gap: 5px;
-}
-.cash{
-  display: flex;
-  gap: 6px;
 }
 /* .bottom{
   flex-direction: row;
