@@ -13,6 +13,20 @@ function AddReferralForm({ onSubmit, onDelete, initialData = {}, isEditing = fal
     status: 'Оформлен'
   });
 
+
+const resetForm = () => {
+  setFormData({
+    bank: '',
+    user: '',
+    cash: '',
+    date1: '',
+    date2: '',
+    date3: '',
+    costs: '',
+    status: 'Оформлен' 
+  })
+}
+
   const handleDelete = () => {
     if (editingId && onDelete) {
       onDelete(editingId);
@@ -31,6 +45,8 @@ function AddReferralForm({ onSubmit, onDelete, initialData = {}, isEditing = fal
         costs: initialData.costs || '',
         status: initialData.status || 'Оформлен'
       });
+    } else {
+      resetForm();
     }
   }, [initialData, isEditing]);
 
@@ -58,9 +74,7 @@ function AddReferralForm({ onSubmit, onDelete, initialData = {}, isEditing = fal
     });
 
     if (!isEditing) {
-      setFormData({
-        bank: '', user: '', cash: '', date1: '', date2: '', date3: '', costs: '', status: 'Оформлен'
-      });
+      resetForm();
     }
   };
 
