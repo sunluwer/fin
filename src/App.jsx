@@ -6,10 +6,10 @@ import Login from './components/Login';
 import './App.css';
 import { supabase } from './lib/supabase';
 
-// Импорт звёзд
-import star1 from './assets/Star.png';
-import star2 from './assets/Star2.png';
-
+// Импорт иконок
+import red from './assets/red.svg'
+import yellow from './assets/yellow.svg'
+import green from './assets/green.svg'
 
 function App() {
   // ==================== STATE ====================
@@ -24,7 +24,6 @@ function App() {
 
   // Смена звезды
   const [currentStarIndex, setCurrentStarIndex] = useState(0);
-  const stars = [star1, star2];
 
   // Выбор периода (по умолчанию — текущий месяц)
   const [selectedPeriod, setSelectedPeriod] = useState(() => {
@@ -293,12 +292,7 @@ if (selectedPeriod !== 'all') {
 
   return (
     <>
-      <div className="container" style={{
-        backgroundImage: `url(${stars[currentStarIndex]})`,
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: '80% 0px',
-        backgroundSize: '450px',
-      }}>
+      <div className="container">
         <div className="header">
           <button onClick={() => supabase.auth.signOut().then(() => window.location.reload())} className="logout">
             Выйти
@@ -323,7 +317,7 @@ if (selectedPeriod !== 'all') {
             padding: '0',
             backgroundColor: 'transparent',
             width: 'fit-content',
-            color: 'black',
+            color: '#9D9D9D',
             border: 'none',
             fontSize: '14px',
             cursor: 'pointer',
@@ -338,7 +332,7 @@ if (selectedPeriod !== 'all') {
           ))}
         </select>
         <button className="addNewReferralButton" onClick={openAddPopup}>
-          +++++
+          +
         </button>
 </div>
 </div>
@@ -348,16 +342,16 @@ if (selectedPeriod !== 'all') {
 
         <div className="stats">
             <div className="register">
-              <p className="registerCount">{countRegister} заказали</p>
-              <p className="registerCash">({sumRegister})</p>
+              <p className="registerCount"> <img src={red} alt="red" /> {countRegister} <span className='gray'>|</span> {sumRegister}</p>
+              {/* <p className="registerCash">{sumRegister}</p> */}
             </div>
               <div className="loading">
-              <p className="loadingCount">{countLoading} жду цд</p>
-              <p className="loadingCash">({sumLoading})</p>
+              <p className="loadingCount"><img src={yellow} alt="yellow" /> {countLoading} <span className='gray'>|</span> {sumLoading}</p>
+              {/* <p className="loadingCash">{sumLoading}</p> */}
             </div>
             <div className="cheking">
-              <p className="chekingCount">{countPending} жду выплаты</p>
-              <p className="chekingCash">({sumPending})</p>
+              <p className="chekingCount"><img src={green} alt="green" />  {countPaid} <span className='gray'>|</span> {sumPaid}</p>
+              {/* <p className="chekingCash">{sumPending}</p> */}
             </div>
         </div>
 
@@ -374,9 +368,9 @@ if (selectedPeriod !== 'all') {
 
         <div className="sortByStatus">
           <p className={activeStatus === null ? 'active' : ''}onClick={() => setActiveStatus(null)}>все</p>
-          <p className={activeStatus === 'Оформлен' ? 'active' : ''} onClick={() => setActiveStatus('Оформлен')}>заказали</p>
-          <p className={activeStatus === 'Ожидание' ? 'active' : ''} onClick={() => setActiveStatus('Ожидание')}>цд</p>
-          <p className={activeStatus === 'Проверка' ? 'active' : ''} onClick={() => setActiveStatus('Проверка')}>проверка</p>
+          <p className={activeStatus === 'Оформлен' ? 'active' : ''} onClick={() => setActiveStatus('Оформлен')}>заказаны</p>
+          <p className={activeStatus === 'Ожидание' ? 'active' : ''} onClick={() => setActiveStatus('Ожидание')}>ожидание цд</p>
+          {/* <p className={activeStatus === 'Проверка' ? 'active' : ''} onClick={() => setActiveStatus('Проверка')}>проверка</p> */}
           <p className={activeStatus === 'Выплачен' ? 'active' : ''} onClick={() => setActiveStatus('Выплачен')}>выплачены</p>
         </div>
 

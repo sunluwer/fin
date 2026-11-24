@@ -29,7 +29,7 @@ function AddReferralForm({ onSubmit, onDelete, initialData = {}, isEditing = fal
         date2: initialData.date2 || '',
         date3: initialData.date3 || '',
         costs: initialData.costs || '',
-        status: initialData.status || 'Проверка'
+        status: initialData.status || 'Оформлен'
       });
     }
   }, [initialData, isEditing]);
@@ -59,7 +59,7 @@ function AddReferralForm({ onSubmit, onDelete, initialData = {}, isEditing = fal
 
     if (!isEditing) {
       setFormData({
-        bank: '', user: '', cash: '', date1: '', date2: '', date3: '', costs: '', status: 'Проверка'
+        bank: '', user: '', cash: '', date1: '', date2: '', date3: '', costs: '', status: 'Оформлен'
       });
     }
   };
@@ -78,7 +78,7 @@ function AddReferralForm({ onSubmit, onDelete, initialData = {}, isEditing = fal
         <input
           type="text"
           name="user"
-          placeholder="Профиль реферала (@username)"
+          placeholder="username | id"
           value={formData.user}
           onChange={handleChange}
           required
@@ -91,6 +91,7 @@ function AddReferralForm({ onSubmit, onDelete, initialData = {}, isEditing = fal
           onChange={handleChange}
           required
         />
+<div className={Styles.dates}>
         <input
           type="text"
           name="date1"
@@ -115,6 +116,7 @@ function AddReferralForm({ onSubmit, onDelete, initialData = {}, isEditing = fal
           onChange={handleChange}
         //   required
         />
+</div>
         <input
           type="number"
           name="costs"
@@ -128,10 +130,10 @@ function AddReferralForm({ onSubmit, onDelete, initialData = {}, isEditing = fal
           value={formData.status}
           onChange={handleChange}
         >
-          <option value="">Выберите статус</option>
+          {/* <option value="">Выберите статус</option> */}
           <option value="Оформлен">Оформлен</option>
           <option value="Ожидание">Ожидание</option>
-          <option value="Проверка">Проверка</option>
+          {/* <option value="Проверка">Проверка</option> */}
           <option value="Выплачен">Выплачен</option>
         </select>
 

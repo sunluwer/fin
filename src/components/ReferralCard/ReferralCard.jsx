@@ -1,27 +1,41 @@
 import Styles from './ReferralCard.module.css';
 import editIcon from '../../assets/edit.svg';
-import tgIcon from '../../assets/tg.svg';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+
+import red from '../../assets/red.svg'
+import yellow from '../../assets/yellow.svg';
+import green from '../../assets/green.svg';
 
 const ReferralCard = ({ datas, onEdit }) => {
-  const statusClasses = {
-    'Выплачен': Styles['status-paid'],
-    'Проверка': Styles['status-pending'],
-    'Оформлен': Styles['status-register'],
-    'Ожидание': Styles['status-waiting'],
-  };
+  
+const [copiedId, setCopiedId] = useState(null);
 
-  const bankClasses = {
-    'Альфа': Styles['bank-red'],
-    'Тбанк': Styles['bank-yellow'],
-  };
+
+  const statusIcons = {
+    'Оформлен': red,
+    'Ожидание': yellow,
+    'Выплачен': green,
+  }
+  
+const handleCopyId = async (id) => {
+  try {
+    await navigator.clipboard.writeText(String(id));
+    setCopiedId(id);
+
+    setTimeout(() =>{
+      setCopiedId(null);
+    }, 1500)
+  } catch (error) {
+    console.error('Не удалось скопировать ID', error);
+  }
+};
+
 
   const sortedDatas = useMemo(() => {
     const statusPriority = {
-      "Проверка": 1,
-      "Оформлен": 2,
-      "Ожидание": 3,
-      "Выплачен": 4
+      "Оформлен": 1,
+      "Ожидание": 2,
+      "Выплачен": 3
     };
 
     const parseDate = (dateStr) => {
@@ -53,42 +67,49 @@ const ReferralCard = ({ datas, onEdit }) => {
     <div className={Styles.referrals}>
       {sortedDatas.map((data) => (
         <div className={Styles.referral} key={data.id}>
-          <div className={Styles.top}>
-            <div className={Styles.left}>
-              <p className={`${Styles.bank} ${bankClasses[data.bank] || ''}`}>
-                {data.bank}
-              </p>
-              <p className={Styles.user}>
-                <img src={tgIcon} alt="tg" /> {data.user}
-              </p>
-            </div>
 
-            <div className={Styles.right}>
-              {/* Исправлено: убрали вложенный <p> */}
-                +{data.cash} ₽
-                <span 
-                  className={Styles.edit} 
-                  onClick={() => onEdit(data.id)}
-                  style={{ cursor: 'pointer' }}
-                >
+          <div className={Styles.top}>
+              <p className={Styles.text}>
+                <img src={statusIcons[data.status] || red} alt={data.status} /> {data.bank} {data.cash} <span className={Styles.gray}> ₽</span>
+              </p>
+
+                <span className={Styles.edit} onClick={() => onEdit(data.id)} style={{ cursor: 'pointer' }}>
                   <img src={editIcon} alt="edit" />
                 </span>
-            </div>
           </div>
 
-          <div className={Styles.bottom}>
-            <div className={Styles.left}>
-              <p className={Styles.date1}>{data.date1}</p>
-              -
-              <p className={Styles.date2}>{data.date2}</p>
-              -
-              <p className={Styles.date3}>{data.date3 || '?'}</p>
-            </div>
-            <p className={statusClasses[data.status] || ''}>
-              {data.status}
-            </p>
+          <div className={Styles.center}>
+              <p className={Styles.user}><span className={Styles.gray}>@</span>{data.user.split(' ')[1]}</p>
+              <p className={Styles.user}><span className={Styles.gray}>id</span> 
+              <span 
+              className={`${Styles.copyId} ${copiedId === data.user.trim().split(/\s+/)[0] ? Styles.copied : ''}`}
+              onClick={() => handleCopyId(data.user.trim().split(/\s+/)[0])}
+              title="Нажмите, чтобы скопировать ID"
+              >
+
+              {/* {data.user.split(' ')[0]} */}
+              
+              {copiedId === data.user.trim().split(/\s+/)[0] ? <span className={Styles.copyTooltip}>Скопировано</span> : data.user.split(' ')[0]}
+
+              {/* {copiedId === data.user.trim().split(/\s+/)[0] && (
+                <span className={Styles.copyTooltip}>✔︎</span>
+              )} */}
+              </span>
+              
+              </p>
           </div>
-        </div>
+              
+
+<div className={Styles.bottom}>
+              <p className={Styles.date1}>{data.date1}</p>
+              <p className={Styles.date2}>{data.date2}</p>
+              <p className={Styles.date3}>{data.date3 || '?'}</p>
+
+              <a href={'tg://user?id=' + data.user.trim().split(/\s+/)[0]}>Open Dialog</a>
+</div>
+              
+
+            </div>
       ))}
     </div>
   );
